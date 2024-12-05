@@ -64,9 +64,16 @@ for sgy_file in sgy_files:
 		
 		print(tr)
 		stream = obspy.core.stream.Stream(traces=tr)
+		
 		sac_file = data_folder+"/day_wise/"+"rec_"+str(rec_ind+1)+"_"+start_date+".sac"
 		
 		stream.write(sac_file, format='SAC')
+		stream = read(sac_file,format="SAC")
+		stream[0].stats.sac.stla,stream[0].stats.sac.stlo = lat,lon
+		stream.detrend("demean")
+		stream.detrend("linear")
+		stream.taper(max_percentage=0.1,type="cosine")
+		stream.write(sac_file,format="SAC")
 	#new_tr = trs[0]	
 	#for j in range(1,len(trs)):
 	#	new_tr = new_tr + trs[j]
